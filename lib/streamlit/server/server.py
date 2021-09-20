@@ -24,13 +24,14 @@ import click
 from enum import Enum
 from typing import (
     Any,
-    Dict,
-    Optional,
-    TYPE_CHECKING,
-    Tuple,
-    Callable,
     Awaitable,
+    Callable,
+    Dict,
     Generator,
+    List,
+    Optional,
+    Tuple,
+    TYPE_CHECKING,
 )
 
 import tornado.concurrent
@@ -61,8 +62,6 @@ from streamlit.server.upload_file_request_handler import (
     UploadFileRequestHandler,
     UPLOAD_FILE_ROUTE,
 )
-
-from streamlit.state.session_state import SCRIPT_RUN_WITHOUT_ERRORS_KEY
 from streamlit.server.routes import AddSlashHandler
 from streamlit.server.routes import AssetsFileHandler
 from streamlit.server.routes import DebugHandler
@@ -76,6 +75,8 @@ from streamlit.server.server_util import is_cacheable_msg
 from streamlit.server.server_util import is_url_from_allowed_origins
 from streamlit.server.server_util import make_url_path_regex
 from streamlit.server.server_util import serialize_forward_msg
+from streamlit.source_util import find_files_with_suffix, STREAMLIT_APP_SUFFIX
+from streamlit.state.session_state import SCRIPT_RUN_WITHOUT_ERRORS_KEY
 
 if TYPE_CHECKING:
     from streamlit.report import Report
@@ -699,6 +700,11 @@ Please report this bug at https://github.com/streamlit/streamlit/issues.
 
         if len(self._session_info_by_id) == 0:
             self._set_state(State.NO_BROWSERS_CONNECTED)
+
+    def get_app_files(self) -> List[str]:
+        if not os.path.isdir(self._script_path):
+            return []
+        return find_files_with_suffix(self._script_path, STREAMLIT_APP_SUFFIX)
 
 
 class _BrowserWebSocketHandler(WebSocketHandler):
