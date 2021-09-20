@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import os
+from typing import List
 
 
 def open_python_file(filename):
@@ -36,7 +37,7 @@ def open_python_file(filename):
 STREAMLIT_APP_SUFFIX = "_app.py"
 
 
-def find_files_with_suffix(starting_dir, suffix):
+def find_files_with_suffix(starting_dir, suffix) -> List[str]:
     # NOTE: We'll want to do some sort of verification on starting_dir (does it
     # actually exist / is it actually a directory) in the hardened version of
     # this feature, but the best place to do so may not be within this
